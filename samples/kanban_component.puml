@@ -1,0 +1,31 @@
+@startuml
+!include ../C4/C4_Component.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title 查询引擎component
+
+Container(spa, "看板前端", "javascript and react", "看板前端")
+ContainerDb(database, "Doris", "SQL Database", "数仓结果表存储", "msql_server")
+Container(backend_api, "其他领域服务", "Java, Docker Container", "其他领域服务", $tags="backend container")
+
+Container_Boundary(api, "查询引擎") {
+    Component(entry, "EntryController", "MVC Rest Controlle", "入口controller")
+    Component(entryRpc, "EntryRpc", "Thrift Rpc Handler", "Rpc入口")
+    Component(before, "前置插件处理器", "Spring Bean", "根据不同api适配不同插件逻辑")
+    Component(middle, "核心查询逻辑", "Spring Bean", "执行核心查询逻辑")
+    Component(after, "后置插件处理器", "Spring Bean", "根据不同api适配不同转化逻辑")
+
+    Rel(entry, before, "Uses")
+    Rel(entryRpc, before, "Uses")
+    Rel(before, middle, "Uses")
+    Rel(middle, after, "Uses")
+    
+}
+
+Rel(spa, entry, "Uses", "JSON/HTTPS")
+Rel(backend_api, entryRpc, "Uses", "THRIFT/RPC")
+Rel(middle, database, "query", "jdbc")
+@enduml

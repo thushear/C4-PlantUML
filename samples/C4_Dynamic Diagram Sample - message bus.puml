@@ -1,12 +1,12 @@
 
 @startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Dynamic.puml
+!include ../C4/C4_Dynamic.puml
 
 LAYOUT_TOP_DOWN()
 LAYOUT_WITH_LEGEND()
 
-Person(customer, Customer, "A customer")
-System_Boundary(c1, "Customer Information") {
+Person(customer, Teacher, "老师")
+System_Boundary(c1, "查询引擎") {
     Container(app, "Customer Application", "Javascript, Angular", "Allows customers to manage their profile")
     Container(customer_service, "Customer Service", "Java, Spring Boot", "The point of access for customer information")
     Container(message_bus, "Message Bus", "RabbitMQ", "Transport for business events")

@@ -1,0 +1,19 @@
+@startuml
+!include ../C4/C4_Dynamic.puml
+
+LAYOUT_WITH_LEGEND()
+
+ContainerDb(c4, "Doris", "Relational Database Schema", "看板结果表 包含排名 统计等")
+Container(c1, "看板前端", "JavaScript and React", "看板前端")
+Container_Boundary(b, "查询引擎") {
+    Component(entry, "EntryController", "MVC Rest Controlle", "入口controller")
+    Component(before, "前置插件处理器", "Spring Bean", "根据不同api适配不同插件逻辑")
+    Component(middle, "核心查询逻辑", "Spring Bean", "执行核心查询逻辑")
+    Component(after, "后置插件处理器", "Spring Bean", "根据不同api适配不同转化逻辑")
+}
+Rel_R(c1, entry, "Submits Request to", "JSON/HTTPS")
+Rel(entry, before, "封装查询Context 如参数 动态表名 ")
+Rel(before, middle, "执行sql查询 支持mybatis动态sql ")
+Rel(middle, after, "执行后置转化逻辑 适配前端个性化展示 如stage信息等")
+Rel_R(middle, c4, "select * from XXX_stat where entityId = ?", "JDBC")
+@enduml

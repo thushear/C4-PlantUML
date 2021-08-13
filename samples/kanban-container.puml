@@ -1,0 +1,28 @@
+@startuml
+!include ../C4/C4_Container.puml
+
+!include ../DEVICONS/angular.puml
+!include ../DEVICONS/dotnet.puml
+!include ../DEVICONS/java.puml
+!include ../DEVICONS/msql_server.puml
+!include ../FONTAWESOME/server.puml
+!include ../FONTAWESOME/envelope.puml
+
+LAYOUT_WITH_LEGEND()
+
+title 查询引擎container
+
+Person(customer, 老师, "看板使用者")
+
+System_Boundary(c1, "看板") {
+    Container(web_app, "看板查询引擎", "Java, Spring MVC", "数据查询", "java")
+    ContainerDb(database, "Doris", "SQL Database", "数仓结果表存储", "msql_server")
+    ContainerDb(flink, "Flink", "SQL Database", "实时数仓", "msql_server")
+}
+
+
+Rel(customer, web_app, "Uses", "HTTPS")
+
+Rel_Neighbor(web_app, database, "查询")
+Rel_Neighbor(flink, database, "数据写入", "sync, JDBC")
+@enduml
